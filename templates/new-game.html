@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Dartinator - New Game</title>
+</head>
+
+<body>
+  <form action="/new" method="post">
+    <p><b>Game Mode</b><br></p>
+    <input type="radio" id="101" name="gametype" value="101">
+    <label for="101">101</label>
+    <input type="radio" id="201" name="gametype" value="201">
+    <label for="201">201</label>
+    <input type="radio" id="301" name="gametype" value="301">
+    <label for="301">301</label>
+    <input type="radio" id="401" name="gametype" value="401">
+    <label for="401">401</label>
+    <input type="radio" id="501" name="gametype" value="501">
+    <label for="501">501</label><br>
+    <p><b>In Mode</b></p>
+    <input type="radio" id="single" name="inmode" value="single">
+    <label for="single">Single</label>
+    <input type="radio" id="2single" name="inmode" value="2single">
+    <label for="2single">Single Twice</label>
+    <input type="radio" id="double" name="inmode" value="double">
+    <label for="double">Double</label>
+    <input type="radio" id="masters" name="inmode" value="masters">
+    <label for="masters">Masters</label><br>
+    <p><b>Out Mode</b></p>
+    <input type="radio" id="single" name="outmode" value="single">
+    <label for="single">Single</label>
+    <input type="radio" id="2single" name="outmode" value="2single">
+    <label for="2single">Single Twice</label>
+    <input type="radio" id="double" name="outmode" value="double">
+    <label for="double">Double</label>
+    <input type="radio" id="masters" name="outmode" value="masters">
+    <label for="masters">Masters</label><br><br>
+    <input type="number" id="sets" name="sets" min="1">
+    <label for="sets">First to (x) sets</label><br><br>
+    <input type="number" id="lets" name="legs" min="1">
+    <label for="legs">First to (x) legs</label>
+    <p><b>Player Selection</b></p>
+    {% for row in cursor %}
+      <input type="checkbox" id="c{{ row[0] }}" name="{{ row[0] }}">
+      <label for="c{{ row[0] }}">{{ row[0] }}</label>
+    {% endfor %}
+    <br><br>
+    <a href="{{ url_for('new_game_submit') }}"><button>Start Game</button></a>
+  </form>
+</body>
+
+</html>

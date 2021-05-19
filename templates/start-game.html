@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Dartinator - Whatever TODO</title>
+</head>
+<script>
+  "use strict";
+  let dart_count = 0;
+  let dart_fields = []
+  function on_field_selected(evt) {
+    dart_count = dart_count + 1;
+    let field_str = '';
+    if (dart_count <= 3) {
+      let field_id = Number(evt.target.id);
+      document.querySelectorAll('p')[dart_count+1].textContent = `${field_id}`;
+      // let base = get_board_base_value(field_id);
+      // let mult = get_multiplier(field_id);
+      dart_fields.push(field_id);
+    }
+    if (dart_count == 3) {
+      const request = new XMLHttpRequest();
+      request.open('POST', '/game-throw');
+      request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+      request.onload = () => {
+        const response = request.responseText;
+        document.querySelectorAll('p')[0].textContent = `Next Player: ${response}`;
+      };
+      request.send(JSON.stringify(dart_fields));
+      dart_count = 0;
+      dart_fields.length = 0;
+    }
+  }
+</script>
+
+<body>
+  <p>Next Player: {{ next_player }}</p>
+  <p>
+    <object data="{{url_for('static', filename='board.svg')}}" type="image/svg+xml" width=800></object>
+  </p>
+  <p></p>
+  <p></p>
+  <p></p>
+  <p></p>
+</body>
+
+</html>

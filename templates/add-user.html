@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Dartinator - Add Player</title>
+  </head>
+  <body>
+    Please add the player's stats below:
+    <form action = "/adduser" method = "post">
+      <p>Name: <input type = "text" name = "nm" /></p>
+      <p><input type = "submit" value = "Add User" /></p>
+    </form>
+    {% if added %}
+      {% if duplicate %}
+        <p>Could not add {{ added }} - Player already exists</p>
+      {% else %}
+        <p>Added player {{ added }}</p>
+      {% endif %}
+    {% endif %}
+    <a href="{{ url_for('home') }}"><button>Home</button></a><br>
+  </body>
+</html>
