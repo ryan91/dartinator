@@ -20,7 +20,7 @@
     }
     if (dart_count == 3) {
       const request = new XMLHttpRequest();
-      request.open('POST', '/game-throw');
+      request.open('POST', '/running-game');
       request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
       request.onload = () => {
         const response = request.responseText;

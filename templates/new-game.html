@@ -6,7 +6,7 @@
 </head>
 
 <body>
-  <form action="/new" method="post">
+  <form action="/new-game" method="post">
     <p><b>Game Mode</b><br></p>
     <input type="radio" id="101" name="gametype" value="101">
     <label for="101">101</label>
@@ -46,7 +46,7 @@
       <label for="c{{ row[0] }}">{{ row[0] }}</label>
     {% endfor %}
     <br><br>
-    <a href="{{ url_for('new_game_submit') }}"><button>Start Game</button></a>
+    <a href="{{ url_for('new_game_post') }}"><button>Start Game</button></a>
   </form>
 </body>
 
