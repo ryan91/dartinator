@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask_socketio import SocketIO, emit
 from typing import Any, List
 import psycopg2
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 t_host = "localhost"
 t_port = "5432"
@@ -68,6 +70,10 @@ def running_game_post():
     db_cursor.execute('select next_player_name();')
     npn = db_cursor.fetchone()[0]
     return npn
+
+@socketio.on('connect')
+def on_connect():
+    emit('after connect',  {'data':'Lets dance'})
 
 def to_postgresql_array(arr: List[Any]) -> str:
     s: str = '{'
