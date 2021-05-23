@@ -1,0 +1,25 @@
+.table-header {
+  background: linear-gradient(to right, #161817, #303030);
+  color: #ffffff;
+}
+.table-data {
+  background: linear-gradient(45deg, #3fa038, #188212);
+}
+.dot {
+  height: 20px;
+  width: 20px;
+  background-color: rgba(100, 2, 4, 0.8);
+  border-radius: 50%;
+  display: inline-block;
+}
+table {
+  font-family: arial;
+  font-size: 36px;
+  width: 50%;
+  border: 1px solid #999;
+  border-collapse: collapse;
+  margin: 0 0 1em 0;
+}
+caption, th, td {
+  padding: 0.4em;
+}

@@ -141,7 +141,7 @@ RETURNS VOID LANGUAGE plpgsql AS $$
 END; $$;
 
 CREATE OR REPLACE FUNCTION register_throw(field_ids INT[])
-RETURNS VOID LANGUAGE plpgsql AS $$
+RETURNS INT LANGUAGE plpgsql AS $$
   DECLARE
     player_score INT;
     next_player_id INT;
@@ -149,17 +149,50 @@ RETURNS VOID LANGUAGE plpgsql AS $$
     dart_score INT;
     nr_players INT;
     fid INT;
+    out_mode InOutMode;
+    mult INT;
+    fid_before INT;
   BEGIN
     SELECT next_player() INTO next_player_id;
     SELECT get_running_game() INTO running_game_id;
     SELECT count(*) INTO nr_players FROM players where gameid = running_game_id;
     SELECT score INTO player_score FROM players
       WHERE gameid = running_game_id AND playerid = next_player_id;
+    SELECT outmode INTO out_mode WHERE id = running_game_id;
+    fid_before := 0;
     FOREACH fid IN ARRAY field_ids LOOP
       SELECT get_board_value(fid) INTO dart_score;
+      SELECT get_multiplier(fid) INTO mult;
       player_score := player_score - dart_score;
+      IF player_score = 0 THEN
+        IF out_mode = 'single' THEN
+          RETURN 1;
+        ELSIF out_mode = 'double' THEN
+          IF MULT = 2 THEN
+            RETURN 1;
+          ELSE
+            RETURN 2;
+          END IF;
+        ELSIF out_mode = 'masters' THEN
+          IF MULT = 2 OR MULT = 3 THEN
+            RETURN 1;
+          ELSE
+            RETURN 2;
+          END IF;
+        ELSIF out_mode = '2single' THEN
+          IF mult = 2 OR fid = fid_before THEN
+            RETURN 1;
+          ELSE
+            RETURN 2;
+          END IF;
+        END IF;
+      ELSIF player_score < 0 THEN
+        RETURN 3;
+      END IF;
+      fid_before = fid;
     END LOOP;
     UPDATE players SET score = player_score
       WHERE gameid = running_game_id AND playerid = next_player_id;
     UPDATE players SET next = round_robin_inc(next, nr_players) WHERE gameid = running_game_id;
+    RETURN 0;
 END; $$;
