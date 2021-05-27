@@ -75,11 +75,19 @@ def create_app(test_config=None):
         npn = c.fetchone()[0]
         return render_template('running-game.html', next_player = npn)
 
+    @app.route('/running-game')
+    def running_game():
+        return render_template('running-game.html', next_player = 'Whatever')
+
     @app.route('/running-game', methods = ['POST'])
     def running_game_post():
         dart_fields: List[int] = request.get_json()
         dart_fields_arr = to_postgresql_array(dart_fields)
         c = database.get_cursor()
+        c.execute('select next_player();')
+        next_player_id = c.fetchone()[0]
+        c.execute(f'select name from users where id = {next_player_id};')
+        next_player = c.fetchone()[0]
         c.execute(f"SELECT register_throw('{dart_fields_arr}');")
         ret = c.fetchone()[0]
         if ret == 1: # checkout
@@ -89,6 +97,9 @@ def create_app(test_config=None):
         database.commit()
         c.execute('select next_player_name();')
         npn = c.fetchone()[0]
+        c.execute(f'select score from players where gameid = get_running_game() and playerid = {next_player_id};')
+        score = c.fetchone()[0]
+        socketio.emit('register_throw', { 'player' : next_player, 'next_player' : npn, 'score' : score })
         return npn
 
     @socketio.on('connect')

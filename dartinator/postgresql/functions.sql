@@ -134,8 +134,8 @@ RETURNS VOID LANGUAGE plpgsql AS $$
       IF NOT FOUND THEN
         RAISE EXCEPTION 'Player % not found', player;
       END IF;
-      INSERT INTO Players (playerid, gameid, next, starting, score) VALUES
-        (userid, gameid, next, next, score);
+      INSERT INTO Players (playerid, gameid, next, starting, sets, legs, score)
+      VALUES (userid, gameid, next, next, 0, 0, score);
       next := next + 1;
     END LOOP;
 END; $$;
@@ -158,7 +158,7 @@ RETURNS INT LANGUAGE plpgsql AS $$
     SELECT count(*) INTO nr_players FROM players where gameid = running_game_id;
     SELECT score INTO player_score FROM players
       WHERE gameid = running_game_id AND playerid = next_player_id;
-    SELECT outmode INTO out_mode WHERE id = running_game_id;
+    SELECT outmode FROM n01options INTO out_mode WHERE gameid = running_game_id;
     fid_before := 0;
     FOREACH fid IN ARRAY field_ids LOOP
       SELECT get_board_value(fid) INTO dart_score;
