@@ -12,11 +12,26 @@
   border-radius: 50%;
   display: inline-block;
 }
+.triangle-left {
+  width: 0;
+  height: 0;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-right: 30px solid magenta;
+}
+.transparent-cell {
+  background-color: #ffffff;
+}
+.red-cell {
+  background-color: #810000;
+  color: white;
+  text-align: center;
+}
 table {
   font-family: arial;
   font-size: 36px;
   width: 50%;
-  border: 1px solid #999;
+  border: none;
   border-collapse: collapse;
   margin: 0 0 1em 0;
 }

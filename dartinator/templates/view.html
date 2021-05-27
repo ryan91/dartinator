@@ -8,16 +8,16 @@
   <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.4.0/socket.io.js"></script>
   <script type="text/javascript">
-    $(document).ready(function () {
+    //$(document).ready(function () {
 
-      // sending a connect request to the server.
-      var socket = io.connect('http://localhost:5000');
+    //  // sending a connect request to the server.
+    //  var socket = io.connect('http://localhost:5000');
 
-      socket.on('after connect', function (msg) {
-        console.log('After connect', msg);
-        $('#log').append('<br>' + $('<div/>').text('Received: ' + msg.data).html());
-      });
-    });
+    //  socket.on('after connect', function (msg) {
+    //    console.log('After connect', msg);
+    //    $('#log').append('<br>' + $('<div/>').text('Received: ' + msg.data).html());
+    //  });
+    //});
   </script>
 </head>
 
@@ -28,21 +28,27 @@
   <table>
     <tr class="table-header">
       <td>First to 7</td>
+      <td></td>
       <td>Sets</td>
       <td>Legs</td>
       <td></td>
+      <td class="transparent-cell"></td>
     </tr>
     <tr class="table-data">
-      <td>Markus<span class="dot"></span></td>
+      <td>Markus</td>
+      <td><span class="dot"></span></td>
       <td>0</td>
       <td>0</td>
       <td>301</td>
+      <td class="transparent-cell"></td>
     </tr>
-    <tr>
+    <tr class="table-data">
       <td>Yannick</td>
+      <td></td>
       <td>0</td>
       <td>0</td>
       <td>301</td>
+      <td class="red-cell">&#9664;</td>
     </tr>
   </table>
 </body>
