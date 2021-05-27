@@ -27,29 +27,28 @@
   <div id="log"></div>
   <table>
     <tr class="table-header">
-      <td>First to 7</td>
+      <td>First to {{ game_info['sets'] }} / {{ game_info['legs'] }}</td>
       <td></td>
       <td>Sets</td>
       <td>Legs</td>
       <td></td>
       <td class="transparent-cell"></td>
     </tr>
-    <tr class="table-data">
-      <td>Markus</td>
-      <td><span class="dot"></span></td>
-      <td>0</td>
-      <td>0</td>
-      <td>301</td>
-      <td class="transparent-cell"></td>
-    </tr>
-    <tr class="table-data">
-      <td>Yannick</td>
-      <td></td>
-      <td>0</td>
-      <td>0</td>
-      <td>301</td>
-      <td class="red-cell">&#9664;</td>
-    </tr>
+    {% for i in range(0, game_info['name']|length) %}
+      <tr class="table-data">
+        <td>{{ game_info['name'][i] }}</td>
+        <td>
+          {% if game_info['starting'][i] == 1 %}
+            <span class="dot"></span>
+          {% endif %}
+        </td>
+        <td>{{ game_info['playersets'][i] }}</td>
+        <td>{{ game_info['playerlegs'][i] }}</td>
+        <td>{{ game_info['playerscore'][i] }}</td>
+        <td class="transparent-cell"></td>
+      </tr>
+    {% endfor %}
+    <!-- <td class="red-cell">&#9664;</td> -->
   </table>
 </body>
 

@@ -44,7 +44,13 @@ def create_app(test_config=None):
 
     @app.route('/view')
     def view():
-        return render_template('view.html')
+        c = database.get_cursor()
+        c.execute("SELECT * FROM get_game_info_as_json;")
+        if c.rowcount == 0:
+            gi_str = "{}"
+        else:
+            gi_str = c.fetchone()[0]
+        return render_template('view.html', game_info = gi_str)
 
     @app.route('/new-game')
     def new_game():

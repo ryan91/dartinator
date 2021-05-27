@@ -196,3 +196,32 @@ RETURNS INT LANGUAGE plpgsql AS $$
     UPDATE players SET next = round_robin_inc(next, nr_players) WHERE gameid = running_game_id;
     RETURN 0;
 END; $$;
+
+CREATE OR REPLACE VIEW get_game_info AS (
+  SELECT *
+  FROM (
+    SELECT p.gameid, array_agg(p.next) AS next,
+      array_agg(p.starting) AS starting, array_agg(p.score) AS playerscore,
+      array_agg(p.sets) AS playersets, array_agg(p.legs) AS playerlegs,
+      array_agg(p.name) as name
+    FROM (
+      SELECT p.gameid, p.next, p.starting, p.score, p.sets, p.legs, u.name
+      FROM players p JOIN users u ON p.playerid = u.id
+    ) p
+    GROUP BY p.gameid
+  ) p JOIN (
+    SELECT g.*, n.inmode, n.outmode, n.score
+    FROM
+      ( SELECT g.*
+        FROM games g
+        WHERE g.id = get_running_game()
+      ) g
+    JOIN n01options n ON g.id = n.gameid
+  ) g ON p.gameid = g.id
+);
+
+CREATE OR REPLACE VIEW get_game_info_as_json AS (
+  SELECT row_to_json(t) AS gameinfo FROM (
+    SELECT * FROM get_game_info
+  ) t
+);
