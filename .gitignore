@@ -3,3 +3,4 @@ pyrightconfig.json
 __pycache__
 .vim
 *.egg-info
+dartinator/static/board.svg

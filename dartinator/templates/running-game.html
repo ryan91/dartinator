@@ -4,39 +4,38 @@
 <head>
   <title>Dartinator - GAME ON!!!</title>
 </head>
-<script>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script type="text/javascript">
   "use strict";
-  let dart_count = 0;
-  let dart_fields = []
+  var dart_count = 0;
+  var dart_fields = [];
+  $(document).ready(function () {
+    document.querySelectorAll('path[data-value]').forEach((el) =>
+      el.onclick = (evt) => on_field_selected(evt));
+    document.querySelectorAll('circle[data-radius]').forEach((el) =>
+      el.onclick = (evt) => on_field_selected(evt));
+  });
   function on_field_selected(evt) {
-    dart_count = dart_count + 1;
-    let field_str = '';
-    if (dart_count <= 3) {
-      let field_id = Number(evt.target.id);
-      // document.querySelectorAll('p')[dart_count+1].textContent = `${field_id}`;
-      // let base = get_board_base_value(field_id);
-      // let mult = get_multiplier(field_id);
-      dart_fields.push(field_id);
-    }
-    if (dart_count == 3) {
-      const request = new XMLHttpRequest();
-      request.open('POST', '/running-game');
-      request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-      //request.onload = () => {
-      //  const response = request.responseText;
-      //  document.querySelectorAll('p')[0].textContent = `Next Player: ${response}`;
-      //};
-      request.send(JSON.stringify(dart_fields));
-      dart_count = 0;
-      dart_fields.length = 0;
-    }
+    console.debug(evt.target.dataset.radius);
+    console.debug(evt.target.dataset.value);
+    //dart_count = dart_count + 1;
+    //let field_str = '';
+    //if (dart_count <= 3) {
+    //  let field_id = Number(evt.target.id);
+    //  dart_fields.push(field_id);
+    //}
+    //if (dart_count == 3) {
+    //  const request = new XMLHttpRequest();
+    //  request.open('POST', '/running-game');
+    //  request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    //  request.send(JSON.stringify(dart_fields));
+    //  dart_count = 0;
+    //  dart_fields.length = 0;
+    //}
   }
 </script>
 
-<body>
-  <p>
-    <object data="{{url_for('static', filename='board.svg')}}" type="image/svg+xml" width=800></object>
-  </p>
+<body>{{board}}
 </body>
 
 </html>

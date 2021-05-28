@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, Markup
 from flask_socketio import SocketIO, emit
 from typing import Any, List
 import os
+import subprocess
 
 database = None
 
@@ -19,6 +20,8 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    optimize_svg(app)
 
     @app.route('/')
     def root():
@@ -77,7 +80,9 @@ def create_app(test_config=None):
 
     @app.route('/running-game')
     def running_game():
-        return render_template('running-game.html', next_player = 'Whatever')
+        with app.open_resource('static/board.svg', mode='r') as svg:
+            x = svg.read()
+            return render_template('running-game.html', board = Markup(x))
 
     @app.route('/running-game', methods = ['POST'])
     def running_game_post():
@@ -111,3 +116,9 @@ def create_app(test_config=None):
         return s
 
     return app
+
+def optimize_svg(app: Flask) -> None:
+    in_svg = os.path.join(app.root_path, 'resources/board.svg')
+    out_svg = os.path.join(app.root_path, 'static/board.svg')
+    subprocess.run(['svgo', '-i', in_svg, '-o', out_svg])
+
