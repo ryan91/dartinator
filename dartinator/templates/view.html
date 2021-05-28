@@ -33,11 +33,6 @@
           }
         }
       });
-
-    socket.on('after connect', function (msg) {
-      console.log('After connect', msg);
-      $('#log').append('<br>' + $('<div/>').text('Received: ' + msg.data).html());
-    });
     });
   </script>
 </head>
@@ -66,10 +61,13 @@
         <td>{{ game_info['playersets'][i] }}</td>
         <td>{{ game_info['playerlegs'][i] }}</td>
         <td>{{ game_info['playerscore'][i] }}</td>
-        <td class="transparent-cell"></td>
+        {% if game_info['next'][i] == 1 %}
+          <td class="red-cell">&#9664;</td>
+        {% else %}
+          <td class="transparent-cell"></td>
+        {% endif %}
       </tr>
     {% endfor %}
-    <!-- <td class="red-cell">&#9664;</td> -->
   </table>
 </body>
 

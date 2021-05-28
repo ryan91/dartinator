@@ -102,10 +102,6 @@ def create_app(test_config=None):
         socketio.emit('register_throw', { 'player' : next_player, 'next_player' : npn, 'score' : score })
         return npn
 
-    @socketio.on('connect')
-    def on_connect():
-        emit('after connect',  {'data':'Lets dance'})
-
     def to_postgresql_array(arr: List[Any]) -> str:
         s: str = '{'
         for v in arr:
