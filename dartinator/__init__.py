@@ -21,7 +21,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    optimize_svg(app)
+    # optimize_svg(app)
 
     @app.route('/')
     def root():
@@ -87,6 +87,8 @@ def create_app(test_config=None):
     @app.route('/running-game', methods = ['POST'])
     def running_game_post():
         dart_fields: List[int] = request.get_json()
+        print(dart_fields)
+        return ""
         dart_fields_arr = to_postgresql_array(dart_fields)
         c = database.get_cursor()
         c.execute('select next_player();')

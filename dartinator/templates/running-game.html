@@ -16,22 +16,23 @@
       el.onclick = (evt) => on_field_selected(evt));
   });
   function on_field_selected(evt) {
-    console.debug(evt.target.dataset.radius);
-    console.debug(evt.target.dataset.value);
-    //dart_count = dart_count + 1;
+    const r = Number(evt.target.dataset.radius);
+    const v = Number(evt.target.dataset.value);
+    dart_count = dart_count + 1;
     //let field_str = '';
-    //if (dart_count <= 3) {
-    //  let field_id = Number(evt.target.id);
-    //  dart_fields.push(field_id);
-    //}
-    //if (dart_count == 3) {
-    //  const request = new XMLHttpRequest();
-    //  request.open('POST', '/running-game');
-    //  request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    //  request.send(JSON.stringify(dart_fields));
-    //  dart_count = 0;
-    //  dart_fields.length = 0;
-    //}
+    if (dart_count <= 3) {
+      let field_id = Number(evt.target.id);
+      dart_fields.push({ radius : r, value : v });
+    }
+    if (dart_count == 3) {
+      console.log(dart_fields);
+      const request = new XMLHttpRequest();
+      request.open('POST', '/running-game');
+      request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+      request.send(JSON.stringify(dart_fields));
+      dart_count = 0;
+      dart_fields.length = 0;
+    }
   }
 </script>
 

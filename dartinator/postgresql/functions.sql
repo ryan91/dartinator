@@ -8,12 +8,12 @@ RETURNS INT LANGUAGE plpgsql AS $$
     RETURN v_row_count;
 END; $$;
 
-CREATE OR REPLACE FUNCTION get_multiplier(field_id INT)
+CREATE OR REPLACE FUNCTION get_multiplier(radius INT)
 RETURNS INT LANGUAGE plpgsql AS $$
   BEGIN
-    IF field_id = 0 THEN RETURN 0; END IF;
-    IF 1 <= field_id AND field_id <= 20 THEN RETURN 2; END IF;
-    IF 41 <= field_id AND field_id <= 60 THEN RETURN 3; END IF;
+    IF radius = 0 OR radius = 5 THEN RETURN 2; END IF;
+    IF radius = 3 THEN RETURN 3; END IF;
+    IF radius = 6 THEN RETURN 0; END IF;
     RETURN 1;
 END; $$;
 
@@ -140,7 +140,7 @@ RETURNS VOID LANGUAGE plpgsql AS $$
     END LOOP;
 END; $$;
 
-CREATE OR REPLACE FUNCTION register_throw(field_ids INT[])
+CREATE OR REPLACE FUNCTION register_throw(darts_json json)
 RETURNS INT LANGUAGE plpgsql AS $$
   DECLARE
     player_score INT;
@@ -148,48 +148,46 @@ RETURNS INT LANGUAGE plpgsql AS $$
     running_game_id INT;
     dart_score INT;
     nr_players INT;
-    fid INT;
     out_mode InOutMode;
     mult INT;
-    fid_before INT;
+    radius INT;
+    value INT;
+    radius_before INT;
+    value_before INT;
+    dart_data json;
   BEGIN
+    radius_before := -1;
+    value_before := -1;
     SELECT next_player() INTO next_player_id;
     SELECT get_running_game() INTO running_game_id;
     SELECT count(*) INTO nr_players FROM players where gameid = running_game_id;
     SELECT score INTO player_score FROM players
       WHERE gameid = running_game_id AND playerid = next_player_id;
     SELECT outmode FROM n01options INTO out_mode WHERE gameid = running_game_id;
-    fid_before := 0;
-    FOREACH fid IN ARRAY field_ids LOOP
-      SELECT get_board_value(fid) INTO dart_score;
-      SELECT get_multiplier(fid) INTO mult;
+    FOR dart_data IN SELECT * FROM json_array_elements(darts_json) LOOP
+      SELECT dart_data->'radius' INTO radius;
+      SELECT dart_data->'value' INTO value;
+      SELECT get_multiplier(radius) INTO mult;
+      dart_score:= mult * value;
       player_score := player_score - dart_score;
       IF player_score = 0 THEN
         IF out_mode = 'single' THEN
           RETURN 1;
         ELSIF out_mode = 'double' THEN
-          IF MULT = 2 THEN
-            RETURN 1;
-          ELSE
-            RETURN 2;
-          END IF;
+          IF mult = 2 THEN RETURN 1; END IF;
+          RETURN 2;
         ELSIF out_mode = 'masters' THEN
-          IF MULT = 2 OR MULT = 3 THEN
-            RETURN 1;
-          ELSE
-            RETURN 2;
-          END IF;
+          IF mult = 2 OR mult = 3 THEN RETURN 1; END IF;
+          RETURN 2;
         ELSIF out_mode = '2single' THEN
-          IF mult = 2 OR fid = fid_before THEN
+          IF mult = 2 OR (radius = radius_before AND value = value_before) THEN
             RETURN 1;
-          ELSE
-            RETURN 2;
           END IF;
+          RETURN 2;
         END IF;
-      ELSIF player_score < 0 THEN
-        RETURN 3;
       END IF;
-      fid_before = fid;
+      radius_before := radius;
+      value_before := value;
     END LOOP;
     UPDATE players SET score = player_score
       WHERE gameid = running_game_id AND playerid = next_player_id;
