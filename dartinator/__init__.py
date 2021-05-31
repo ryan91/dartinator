@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, Markup
+from flask import Flask, render_template, request, redirect, url_for, Markup, send_from_directory
 from flask_socketio import SocketIO, emit
 from typing import Any, List
 import os
@@ -84,11 +84,15 @@ def create_app(test_config=None):
             x = svg.read()
             return render_template('running-game.html', board = Markup(x))
 
+    @app.route('/favicon.ico')
+    def favicon():
+        return send_from_directory(os.path.join(app.root_path, 'static'),
+                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
     @app.route('/running-game', methods = ['POST'])
     def running_game_post():
         dart_fields: List[int] = request.get_json()
         print(dart_fields)
-        return ""
         dart_fields_arr = to_postgresql_array(dart_fields)
         c = database.get_cursor()
         c.execute('select next_player();')
