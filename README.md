@@ -89,7 +89,7 @@ Shall the new role be allowed to create databases? (y/n) n
 Shall the new role be allowed to create more roles? (y/n) n
 ```
 
-3. Crate a database
+4. Crate a database
 
 Now, you'll set up a database which is also named `dartinator`.
 
@@ -97,7 +97,7 @@ Now, you'll set up a database which is also named `dartinator`.
 createdb dartinator
 ```
 
-3. Change the owner owner of the database to `dartinator`
+5. Change the owner owner of the database to `dartinator`
 
 ```
 psql -c "alter database dartinator owner to dartinator;"
@@ -127,7 +127,6 @@ Enter the virtual environment
 
 ```
 source .venv/bin/activate
-
 ```
 
 Install the packages and _dartinator_
