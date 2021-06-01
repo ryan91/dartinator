@@ -7,32 +7,7 @@
   <title>Dartinator</title>
   <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.4.0/socket.io.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function () {
-      var socket = io.connect('http://localhost:5000');
-
-      socket.on('register_throw', function(msg) {
-        const player = msg.player;
-        const next_player = msg.next_player;
-        const score = msg.score;
-        var table = document.getElementById("viewtable");
-        for (var i = 0, row; row = table.rows[i]; i++) {
-          if (row.cells[0].textContent == player) {
-            row.cells[4].textContent = score;
-            row.cells[5].classList.remove('red-cell');
-            row.cells[5].classList.add('transparent-cell');
-            row.cells[5].textContent = "";
-          } else {
-            if (row.cells[0].textContent == next_player) {
-              row.cells[5].classList.remove('transparent-cell');
-              row.cells[5].classList.add('red-cell');
-              row.cells[5].textContent = "\u25c0";
-            }
-          }
-        }
-      });
-    });
-  </script>
+  <script src="{{ url_for('static', filename='view.js') }}"></script>
 </head>
 
 <body>
