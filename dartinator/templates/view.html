@@ -9,8 +9,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.4.0/socket.io.js"></script>
   <script type="text/javascript">
     $(document).ready(function () {
-
-    //  // sending a connect request to the server.
       var socket = io.connect('http://localhost:5000');
 
       socket.on('register_throw', function(msg) {
@@ -38,9 +36,6 @@
 </head>
 
 <body>
-  <h1>SocketIO Example</h1>
-  <h2>Receive:</h2>
-  <div id="log"></div>
   <table id="viewtable">
     <tr class="table-header">
       <td>First to {{ game_info['sets'] }} / {{ game_info['legs'] }}</td>

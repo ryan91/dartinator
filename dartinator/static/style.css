@@ -27,7 +27,7 @@
   color: white;
   text-align: center;
 }
-table {
+#viewtable {
   font-family: arial;
   font-size: 36px;
   width: 50%;
@@ -35,6 +35,33 @@ table {
   border-collapse: collapse;
   margin: 0 0 1em 0;
 }
+#throwtable {
+  font-size: 26px;
+  border-collapse: collapse;
+  border: 5px solid black;
+}
 caption, th, td {
   padding: 0.4em;
+}
+#board-svg {
+  float: left;
+  width: 20%;
+  vertical-align: middle;
+  line-height: 38px;
+}
+#board-sidepanel {
+  float: left;
+  vertical-align: middle;
+  line-height: 38px;
+}
+#wrap-float {
+  overflow: hidden;
+}
+#rg-back {
+  font-size: 22px;
+  color: red;
+}
+#rg-undo {
+  font-size: 22px;
+  color: blue;
 }

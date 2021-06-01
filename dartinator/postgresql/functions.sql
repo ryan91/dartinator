@@ -155,7 +155,9 @@ RETURNS INT LANGUAGE plpgsql AS $$
     radius_before INT;
     value_before INT;
     dart_data json;
+    ret INT;
   BEGIN
+    ret := 0;
     radius_before := -1;
     value_before := -1;
     SELECT next_player() INTO next_player_id;
@@ -170,21 +172,25 @@ RETURNS INT LANGUAGE plpgsql AS $$
       SELECT get_multiplier(radius) INTO mult;
       dart_score:= mult * value;
       player_score := player_score - dart_score;
+      IF player_score < 0 THEN
+        RETURN 3;
+      END IF;
       IF player_score = 0 THEN
         IF out_mode = 'single' THEN
-          RETURN 1;
+          ret := 1;
         ELSIF out_mode = 'double' THEN
-          IF mult = 2 THEN RETURN 1; END IF;
-          RETURN 2;
+          IF mult = 2 THEN ret := 1; END IF;
+          ret := 2;
         ELSIF out_mode = 'masters' THEN
-          IF mult = 2 OR mult = 3 THEN RETURN 1; END IF;
-          RETURN 2;
+          IF mult = 2 OR mult = 3 THEN ret := 1; END IF;
+          ret := 2;
         ELSIF out_mode = '2single' THEN
           IF mult = 2 OR (radius = radius_before AND value = value_before) THEN
-            RETURN 1;
+            ret := 1;
           END IF;
-          RETURN 2;
+          ret := 2;
         END IF;
+        EXIT;
       END IF;
       radius_before := radius;
       value_before := value;
@@ -192,7 +198,7 @@ RETURNS INT LANGUAGE plpgsql AS $$
     UPDATE players SET score = player_score
       WHERE gameid = running_game_id AND playerid = next_player_id;
     UPDATE players SET next = round_robin_inc(next, nr_players) WHERE gameid = running_game_id;
-    RETURN 0;
+    RETURN ret;
 END; $$;
 
 CREATE OR REPLACE VIEW get_game_info AS (

@@ -2,11 +2,44 @@
 <html>
 
 <head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <title>Dartinator - GAME ON!!!</title>
 </head>
 <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 <script src="{{ url_for('static', filename='running-game.js') }}"></script>
 
-<body>{{ board }}</body>
+<body>
+  <table>
+    <tr>
+      <td>{{ board }}</td>
+      <td>
+        <table>
+          <tr>
+            <td colspan="2">
+              <table id="throwtable">
+                <tr class="table-header">
+                  <td id="t1" width="35px" align="center">--</td>
+                  <td id="t2" width="35px" align="center">--</td>
+                  <td id="t3" width="35px" align="center">--</td>
+                </tr>
+                <tr class="table-data">
+                  <td colspan="3" align="center"><b id="tsum">0</b></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center">
+              <button id="rg-undo">Undo</button>
+            </td>
+            <td align="center">
+              <button id="rg-back">Back</button>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
 
 </html>
