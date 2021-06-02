@@ -5,6 +5,11 @@
 .table-data {
   background: linear-gradient(45deg, #3fa038, #188212);
 }
+.notificationbox {
+  font-size: 48px;
+  font-weight: bold;
+  color: #8a0909;
+}
 .dot {
   height: 20px;
   width: 20px;
@@ -29,8 +34,8 @@
 }
 #viewtable {
   font-family: arial;
-  font-size: 36px;
-  width: 50%;
+  font-size: 24px;
+  /* width: 75%; */
   border: none;
   border-collapse: collapse;
   margin: 0 0 1em 0;

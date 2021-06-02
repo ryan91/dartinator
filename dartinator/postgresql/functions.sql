@@ -192,6 +192,14 @@ RETURNS INT LANGUAGE plpgsql AS $$
   END;
 $$;
 
+CREATE OR REPLACE VIEW get_played_legs AS (
+  SELECT sum(legs) FROM players WHERE gameid = get_running_game()
+);
+
+CREATE OR REPLACE VIEW get_played_sets AS (
+  SELECT sum(sets) FROM players WHERE gameid = get_running_game()
+);
+
 -- 0: normal throw
 -- 1: game shot and leg
 -- 2: game shot and set
@@ -266,10 +274,18 @@ RETURNS INT LANGUAGE plpgsql AS $$
     END LOOP;
     IF ret = 1 THEN
       SELECT increment_legs_and_sets(running_game_id, next_player_id) INTO ret;
-      UPDATE players SET score = game_score,
-        starting = round_robin_inc(starting, nr_players)
-        WHERE gameid = running_game_id;
-      UPDATE players SET next = starting WHERE gameid = running_game_id;
+      IF ret = 0 OR ret = 1 THEN
+        UPDATE players SET
+          score = game_score,
+          starting = round_robin_inc(starting, nr_players)
+          WHERE gameid = running_game_id;
+        UPDATE players SET next = starting WHERE gameid = running_game_id;
+        IF ret = 1 THEN
+          UPDATE players SET legs = 0 WHERE gameid = running_game_id;
+        END IF;
+      ELSE
+        UPDATE players SET score = 0, legs = 0 WHERE gameid = running_game_id;
+      END IF;
       ret := ret + 1;
       RETURN ret;
     ELSIF ret != 4 THEN

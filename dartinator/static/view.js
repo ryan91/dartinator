@@ -32,6 +32,21 @@ function set_score(row, score) {
   row.cells[4].textContent = score;
 }
 
+function notify(msg) {
+  var notbox = document.getElementById('notificationbox');
+  notbox.textContent = msg;
+  setTimeout(() => notbox.textContent = '', 2000);
+}
+
+function to_nth_string(i) {
+  switch (i) {
+    case 1: return '1st';
+    case 2: return '2nd';
+    case 3: return '3rd';
+    default: return String(i) + "th";
+  }
+}
+
 function regular_throw(msg, is_no_score) {
   const player = msg.player;
   const next_player = msg.next_player;
@@ -46,7 +61,9 @@ function regular_throw(msg, is_no_score) {
       set_white_triangle(row, true);
     }
   }
-  // TODO show 'no score'
+  if (is_no_score) {
+    notify('No Score')
+  }
 }
 
 $(document).ready(function () {
@@ -59,6 +76,7 @@ $(document).ready(function () {
     const starting_player = msg.starting_player;
     const legs = msg.legs;
     const score = msg.score;
+    const total = msg.total_legs;
     var table = document.getElementById("viewtable");
     for (var i = 1, row; row = table.rows[i]; i++) {
       set_score(row, score);
@@ -72,15 +90,19 @@ $(document).ready(function () {
         set_red_dot(row, true);
       }
     }
+    const not = 'Game shot and the ' + to_nth_string(total) + ' leg - ' + player;
+    notify(not)
   });
 
   socket.on('game_shot_and_set', function(msg) {
     const player = msg.player;
     const starting_player = msg.starting_player;
     const sets = msg.sets;
+    const score = msg.score;
+    const total = msg.total_legs;
     var table = document.getElementById("viewtable");
     for (var i = 1, row; row = table.rows[i]; i++) {
-      set_score(row, 0);
+      set_score(row, score);
       set_red_dot(row, false);
       if (row.cells[0].textContent == player) {
         set_sets(row, sets);
@@ -92,6 +114,8 @@ $(document).ready(function () {
         set_red_dot(row, true);
       }
     }
+    const not = 'Game shot and the ' + to_nth_string(total) + ' set - ' + player;
+    notify(not);
   });
 
   socket.on('game_shot_and_match', function(msg) {
@@ -100,13 +124,12 @@ $(document).ready(function () {
 
     var table = document.getElementById('viewtable');
     for (var i = 1, row; row = table.rows[i]; i++) {
+      set_legs(row, 0);
       if (row.cells[0] == player) {
         set_sets(row, sets);
-        set_legs(row, 0);
       }
     }
-
-    // TODO show winner
+    notify('Game shot and the match - ' + player);
   });
 
   socket.on('no_score', (msg) => regular_throw(msg, true));

@@ -1,10 +1,15 @@
 import psycopg2
+from psycopg2._psycopg import cursor
 
 t_host = "localhost"
 t_port = "5432"
 t_dbname = "dartinator"
 t_user = "dartinator"
 t_pw = "ithrow180s"
+
+def exec_single(cur: cursor, query: str):
+    cur.execute(query)
+    return cur.fetchone()[0]
 
 class Database:
     def __init__(self):
